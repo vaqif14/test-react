@@ -1,9 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
-import { http } from "../api/http";
-import { ICatData } from "@/api/mock";
+import { useCatDataService } from "../utils/useCatDataService";
 
-export const useGetCat = () =>
-  useQuery<ICatData[]>({
+export const useCatAPI = () => {
+  const { getCatData } = useCatDataService();
+
+  const { data: catData, isLoading } = useQuery({
     queryKey: ["cats"],
-    queryFn: () => http.get("/cats").then((res) => res.data),
+    queryFn: getCatData,
+    initialData: [],
+    refetchInterval: 5000,
   });
+
+  return { catData, isLoading };
+};

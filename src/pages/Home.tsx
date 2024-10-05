@@ -1,18 +1,32 @@
 import React, { useState } from "react";
 import Card from "../components/card";
-import { useGetCat } from "../hooks/useGetCat";
-import Renderif from "../components/renderif";
 import Loader from "../components/loader";
 import Preview from "../components/Preview";
+import Renderif from "../components/renderif";
+import { useCatAPI } from "../hooks/useGetCat";
 
-import { useKeyPress } from "ahooks";
+import { ICatData } from "@/api/mock";
+import { useKeyPress, useMemoizedFn, useUpdateEffect } from "ahooks";
 
 const Home = () => {
   const [imgUrl, setImgUrl] = useState("");
-  const { data, isLoading } = useGetCat();
+  const { catData, isLoading } = useCatAPI();
+  const [cardData, setCardData] = useState<ICatData[]>(catData!);
 
   useKeyPress([27], () => {
     setImgUrl("");
+  });
+
+  useUpdateEffect(() => {
+    setCardData(catData!);
+  }, [catData]);
+
+  const handleDrop = useMemoizedFn((fromIndex: number, toIndex: number) => {
+    const updatedData = [...cardData];
+    const [movedCard] = updatedData.splice(fromIndex, 1);
+    updatedData.splice(toIndex, 0, movedCard);
+    setCardData(updatedData);
+    localStorage.setItem("catData", JSON.stringify(updatedData));
   });
 
   return (
@@ -24,10 +38,18 @@ const Home = () => {
         <Renderif condition={isLoading}>
           <Loader />
         </Renderif>
-        <Renderif condition={!!data && !isLoading}>
-          {data?.map((item) => (
+        <Renderif condition={!!cardData && !isLoading}>
+          {cardData?.map((item, index) => (
             <React.Fragment key={item.title}>
-              <Card thumbnail={item.thumbnail} title={item.title} onClick={setImgUrl} isLoading={isLoading} />
+              <Card
+                key={item.title}
+                title={item.title}
+                thumbnail={item.thumbnail}
+                isLoading={isLoading}
+                index={index}
+                onClick={setImgUrl}
+                onDrop={handleDrop}
+              />
             </React.Fragment>
           ))}
         </Renderif>
