@@ -1,0 +1,1 @@
+{"root":["./src/main.tsx","./src/vite-env.d.ts","./src/api/http.ts","./src/api/mock.ts","./src/components/Preview.tsx","./src/components/card.tsx","./src/components/loader.tsx","./src/components/renderif.tsx","./src/hooks/useGetCat.ts","./src/pages/Home.tsx","./src/utils/useCatDataService.ts"],"version":"5.6.2"}

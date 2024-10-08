@@ -35,21 +35,46 @@ const Card: FC<ICard> = ({ title, thumbnail, onClick, isLoading, index, onDrop }
   });
 
   return (
-    <div ref={cardRef} className={cn("shadow-md border-2 p-5 w-1/3")} onClick={() => onClick?.(thumbnail)} draggable>
-      <h3 className="text-center">{title}</h3>
+    <div
+      ref={cardRef}
+      className={cn(
+        "group max-w-xs mx-auto bg-white border border-gray-200 rounded-lg shadow-lg transition-transform transform hover:-translate-y-2 hover:shadow-xl hover:border-gray-400 dark:bg-gray-800 dark:border-gray-700 dark:text-white",
+        "flex flex-col justify-between p-4 cursor-pointer"
+      )}
+      onClick={() => onClick?.(thumbnail)}
+      draggable
+    >
       <Renderif condition={isLoading}>
         <Loader />
       </Renderif>
-      <img
-        src={thumbnail}
-        alt={title}
-        width={250}
-        loading="lazy"
-        className={cn("object-cover transition-opacity duration-300", {
-          "opacity-0": isLoading,
-          "opacity-100": !isLoading,
-        })}
-      />
+
+      {!isLoading && (
+        <>
+          <img
+            src={thumbnail}
+            alt={title}
+            loading="lazy"
+            className={cn(
+              "w-full h-48 object-cover rounded-lg transition-opacity",
+              {
+                "opacity-0": isLoading,
+                "opacity-100": !isLoading,
+              }
+            )}
+          />
+
+          <h3 className="text-lg font-semibold mt-4 text-gray-800 dark:text-white text-center">
+            {title}
+          </h3>
+        </>
+      )}
+
+      {/* Hover effect - Card content appears smoother */}
+      <div
+        className={cn(
+          "absolute inset-0 bg-gray-900 bg-opacity-20 rounded-lg transition-opacity duration-300 opacity-0 group-hover:opacity-100"
+        )}
+      ></div>
     </div>
   );
 };
